@@ -101,11 +101,6 @@ class EdifyGenerator(object):
            ");")
     self.script.append(self._WordWrap(cmd))
 
-  def RunConfig(self, command):
-    self.script.append('package_extract_file("system/bin/modelid_cfg.sh", "/tmp/modelid_cfg.sh");')
-    self.script.append('set_perm(0, 0, 0777, "/tmp/modelid_cfg.sh");')
-    self.script.append(('run_program("/tmp/modelid_cfg.sh", "%s");' % command))
-
   def RunBackup(self, command):
     self.script.append('package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");')
     self.script.append('package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");')
