@@ -402,8 +402,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
       info_dict=OPTIONS.info_dict)
 
   if not OPTIONS.no_assert:
-    #AppendAssertions(script, OPTIONS.info_dict)
-	device_specific.FullOTA_Assertions()
+    AppendAssertions(script, OPTIONS.info_dict)
+  device_specific.FullOTA_Assertions()
 
   device_specific.FullOTA_InstallBegin()
 
@@ -853,7 +853,7 @@ def main(argv):
                                               "worker_threads=",
                                               "aslr_mode=",
                                               "backup=",
-					      "override_device=",
+                                              "override_device=",
                                               ],
                              extra_option_handler=option_handler)
 
