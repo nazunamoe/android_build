@@ -82,9 +82,9 @@ endif
 # as a 'hint'. If thumb is not enabled, these files are just
 # compiled as ARM.
 ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
-    ifeq ($(TARGET_USE_O2),true)
+    ifeq ($(TARGET_USE_O3),true)
     TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O2 \
+                            -O3 \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing \
                             -fno-tree-vectorize
