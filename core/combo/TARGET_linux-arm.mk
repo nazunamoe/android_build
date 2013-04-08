@@ -74,7 +74,8 @@ else
 TARGET_arm_CFLAGS :=    -O3 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
-                        -funswitch-loops
+                        -funswitch-loops     \
+                        -pipe
 endif
 # Modules can choose to compile some source as thumb. As
 # non-thumb enabled targets are supported, this is treated
@@ -94,7 +95,8 @@ ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
                             -funsafe-math-optimizations \
                             -fstrict-aliasing \
                             -Wstrict-aliasing=2 \
-                            -Werror=strict-aliasing
+                            -Werror=strict-aliasing \
+                            -pipe
     endif
 else
     TARGET_thumb_CFLAGS := $(TARGET_arm_CFLAGS)
@@ -147,6 +149,7 @@ TARGET_GLOBAL_CFLAGS += \
 			-Werror=format-security \
 			-D_FORTIFY_SOURCE=1 \
 			-fno-short-enums \
+                        -pipe \
 			$(arch_variant_cflags)
 
 android_config_h := $(call select-android-config-h,linux-arm)
