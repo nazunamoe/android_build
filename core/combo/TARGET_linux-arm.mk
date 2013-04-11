@@ -68,13 +68,13 @@ TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 ifeq ($(TARGET_USE_O2),true)
 TARGET_arm_CFLAGS :=    -Os \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing    \
+                        -fstrict-aliasing \
                         -fno-tree-vectorize
 else
 TARGET_arm_CFLAGS :=    -O3 \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing    \
-                        -funswitch-loops     \
+                        -fstrict-aliasing \
+                        -funswitch-loops \
                         -pipe
 endif
 # Modules can choose to compile some source as thumb. As
