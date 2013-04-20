@@ -68,14 +68,13 @@ TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 ifeq ($(TARGET_USE_O2),true)
 TARGET_arm_CFLAGS :=    -Os \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing \
+                        -fstrict-aliasing    \
                         -fno-tree-vectorize
 else
 TARGET_arm_CFLAGS :=    -O3 \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing \
-                        -funswitch-loops \
-                        -pipe
+                        -fstrict-aliasing    \
+                        -funswitch-loops
 endif
 # Modules can choose to compile some source as thumb. As
 # non-thumb enabled targets are supported, this is treated
@@ -92,30 +91,12 @@ ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
     TARGET_thumb_CFLAGS :=  -mthumb \
                             -O3 \
                             -fomit-frame-pointer \
-                            -funsafe-math-optimizations \
-                            -fstrict-aliasing \
-                            -Wstrict-aliasing=2 \
-                            -Werror=strict-aliasing \
-                            -pipe
+                            -fno-strict-aliasing \
+                            -fno-tree-vectorize
     endif
 else
-    TARGET_thumb_CFLAGS := $(TARGET_arm_CFLAGS)
+TARGET_thumb_CFLAGS := $(TARGET_arm_CFLAGS)
 endif
-
-ifeq ($(TARGET_USE_GRAPHITE),true)
-    TARGET_thumb_CFLAGS +=   -floop-interchange \
-                             -floop-strip-mine \
-                             -floop-block \
-                             -ffast-math \
-                             -funsafe-loop-optimizations
-endif
-
-# Turn off strict-aliasing if we're building an AOSP variant without the
-# patchset...
-ifeq ($(DEBUG_NO_STRICT_ALIASING),yes)
-TARGET_arm_CFLAGS += -fno-strict-aliasing -Wno-error=strict-aliasing
-TARGET_thumb_CFLAGS += -fno-strict-aliasing -Wno-error=strict-aliasing
-endif   
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to force a full arm build, even for
@@ -131,16 +112,8 @@ ifeq ($(FORCE_ARM_DEBUGGING),true)
   TARGET_thumb_CFLAGS += -marm -fno-omit-frame-pointer
 endif
 
-ifeq ($(TARGET_DISABLE_ARM_PIE),true)
-   PIE_GLOBAL_CFLAGS :=
-   PIE_EXECUTABLE_TRANSFORM := -Wl,-T,$(BUILD_SYSTEM)/armelf.x
-else
-   PIE_GLOBAL_CFLAGS := -fPIE
-   PIE_EXECUTABLE_TRANSFORM := -fPIE -pie
-endif
-
 TARGET_GLOBAL_CFLAGS += \
-			-msoft-float -fpic $(PIE_GLOBAL_CFLAGS) \
+			-msoft-float -fpic -fPIE \
 			-ffunction-sections \
 			-fdata-sections \
 			-funwind-tables \
@@ -149,7 +122,6 @@ TARGET_GLOBAL_CFLAGS += \
 			-Werror=format-security \
 			-D_FORTIFY_SOURCE=1 \
 			-fno-short-enums \
-                        -pipe \
 			$(arch_variant_cflags)
 
 android_config_h := $(call select-android-config-h,linux-arm)
@@ -314,7 +286,7 @@ $(hide) $(PRIVATE_CXX) \
 endef
 
 define transform-o-to-executable-inner
-$(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic $(PIE_EXECUTABLE_TRANSFORM) \
+$(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic -fPIE -pie \
 	-Wl,-dynamic-linker,/system/bin/linker \
 	-Wl,--gc-sections \
 	-Wl,-z,nocopyreloc \
